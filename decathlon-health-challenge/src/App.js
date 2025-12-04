@@ -207,29 +207,64 @@ function App() {
             <div className="card-content">
               {step !== 'result' ? (
                 <>
-                  <div className="eyebrow">Bienvenue</div>
+                  <div className="eyebrow">💪 Bienvenue dans le programme santé posturale</div>
                   <h1>Deviens le CTO de ta santé posturale.</h1>
-                  <p className="subtitle">
-                    Quelques questions sur ton niveau, tes habitudes sportives et tes éventuelles douleurs,
-                    et on te propose un mini-programme de mouvements avec une exécution
-                    <strong> propre</strong> pour limiter les blessures.
-                  </p>
-                  <div className="pill-row">
-                    <div className="pill"><strong>Squat</strong> &mdash; genoux protégés</div>
-                    <div className="pill"><strong>Gainage</strong> &mdash; dos droit</div>
-                    <div className="pill"><strong>Yoga</strong> &mdash; posture contrôlée</div>
+                  
+                  <div className="intro-highlight">
+                    <p className="intro-main-text">
+                      ✨ <strong>Un diagnostic personnalisé en 4 questions</strong>
+                    </p>
+                    <p className="subtitle">
+                      Réponds à quelques questions sur ton <strong>niveau sportif</strong>, tes <strong>habitudes</strong> 
+                      et tes <strong>douleurs</strong>, et reçois un <strong>mini-programme adapté</strong> avec des mouvements 
+                      exécutés de manière <strong>propre et sécurisée</strong> pour prévenir les blessures.
+                    </p>
                   </div>
+
+                  <div className="benefits-section">
+                    <h3>📋 Ce que tu vas recevoir :</h3>
+                    <div className="benefits-grid">
+                      <div className="benefit-card">
+                        <div className="benefit-icon">🎯</div>
+                        <div className="benefit-title">Profil adapté</div>
+                        <div className="benefit-desc">Analyse basée sur tes réponses</div>
+                      </div>
+                      <div className="benefit-card">
+                        <div className="benefit-icon">🏋️</div>
+                        <div className="benefit-title">Exercices ciblés</div>
+                        <div className="benefit-desc">6 mouvements pour ton objectif</div>
+                      </div>
+                      <div className="benefit-card">
+                        <div className="benefit-icon">📖</div>
+                        <div className="benefit-title">Instructions détaillées</div>
+                        <div className="benefit-desc">Technique et posture expliquées</div>
+                      </div>
+                      <div className="benefit-card">
+                        <div className="benefit-icon">🛡️</div>
+                        <div className="benefit-title">Prévention des blessures</div>
+                        <div className="benefit-desc">Conseils d'exécution sécurisée</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pill-row">
+                    <div className="pill">🦵 <strong>Squat</strong> &mdash; genoux protégés</div>
+                    <div className="pill">💪 <strong>Gainage</strong> &mdash; dos droit</div>
+                    <div className="pill">🧘 <strong>Yoga</strong> &mdash; posture contrôlée</div>
+                  </div>
+
                   <div className="cta-row">
                     <button className="btn-primary" onClick={startQuiz}>
                       <span>▶</span> Commencer mon profil
                     </button>
                     <button className="btn-ghost">
-                      <span>ⓘ</span> Voir le principe
+                      <span>ⓘ</span> En savoir plus
                     </button>
                   </div>
+
                   <div className="status-badge">
                     <div className="status-dot"></div>
-                    Analyse en local &nbsp;&bull;&nbsp; Privacy first.
+                    ✅ Analyse en local &nbsp;&bull;&nbsp; 🔒 Privacy first &nbsp;&bull;&nbsp; 🚀 100% gratuit
                   </div>
                 </>
               ) : (
