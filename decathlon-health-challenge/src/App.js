@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import './App.css';
 import UserCard from './UserCard';
-import ExerciseDetail from './ExerciseDetail'; 
+import ExerciseDetail from './ExerciseDetail';
+import QuizPage from './QuizPage'; 
 
 // --- DONNÉES & LOGIQUE (Le "Cerveau" de l'app) ---
 
@@ -92,28 +93,19 @@ function App() {
 
   const startQuiz = () => {
     setStep('quiz');
-    // Scroll automatique vers la droite (simulation visuelle)
-    if(formRef.current) formRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleAnswer = (weights, answerText) => {
-    const newScores = { ...scores };
-    Object.keys(weights).forEach(k => newScores[k] = (newScores[k] || 0) + weights[k]);
-    setScores(newScores);
-    
-    // Enregistrer la réponse
-    const newAnswers = [...userAnswers, answerText];
-    setUserAnswers(newAnswers);
+  const handleQuizComplete = (result) => {
+    setUserName(result.userName);
+    setScores(result.scores);
+    setUserAnswers(result.answers);
+    setResultProfile(result.profile);
+    setStep('result');
+    setShowCard(true);
+  };
 
-    if (currentQ < QUESTIONS.length - 1) {
-      setCurrentQ(currentQ + 1);
-    } else {
-      // Calcul du gagnant
-      const winner = Object.keys(newScores).reduce((a, b) => newScores[a] > newScores[b] ? a : b);
-      setResultProfile(winner);
-      setStep('result');
-      setShowCard(true);
-    }
+  const handleQuizBack = () => {
+    setStep('intro');
   };
 
   const reset = () => {
@@ -148,7 +140,14 @@ function App() {
       </header>
 
       <main>
-        {step === 'result' ? (
+        {step === 'quiz' ? (
+          // PAGE QCM - Page séparée avec composant QuizPage
+          <QuizPage 
+            questions={QUESTIONS}
+            onComplete={handleQuizComplete}
+            onBack={handleQuizBack}
+          />
+        ) : step === 'result' ? (
           // LAYOUT RÉSULTAT : Carte à gauche (principale)
           <div className="shell-result">
             {/* COLONNE GAUCHE : GRANDE CARTE INTERACTIVE */}
@@ -199,13 +198,10 @@ function App() {
             </aside>
           </div>
         ) : (
-          // LAYOUT NORMAL : Quiz et intro
-          <div className="shell">
-          
-          {/* COLONNE GAUCHE : Static info or Results details */}
-          <section className="card left-card">
-            <div className="card-content">
-              {step !== 'result' ? (
+          // LAYOUT INTRO : Une seule colonne, agrandie
+          <div className="shell-intro">
+            <section className="card left-card-intro">
+              <div className="card-content">
                 <>
                   <div className="eyebrow">💪 Bienvenue dans le programme santé posturale</div>
                   <h1>Deviens le CTO de ta santé posturale.</h1>
@@ -267,155 +263,9 @@ function App() {
                     ✅ Analyse en local &nbsp;&bull;&nbsp; 🔒 Privacy first &nbsp;&bull;&nbsp; 🚀 100% gratuit
                   </div>
                 </>
-              ) : (
-                /* VUE RÉSULTAT (DÉTAILS) */
-                <div className="result-details animate-in">
-                  <div className="eyebrow">Diagnostic Terminé</div>
-                  <h1>Ton profil : {profileData.label}</h1>
-                  <p className="subtitle">{profileData.desc}</p>
-                  
-                  <div className="tips-box">
-                    <h4>🧠 Conseils personnalisés :</h4>
-                    <ul>
-                      {profileData.tips.map((t, i) => <li key={i}>{t}</li>)}
-                    </ul>
-                  </div>
-
-                  <h4 style={{marginTop: '20px', marginBottom: '10px'}}>🛒 Matériel recommandé (Bonus)</h4>
-                  <div className="product-grid">
-                    {recommendedProducts.map((p, i) => (
-                      <div className="product-card-mini" key={i}>
-                        <div className="prod-name">{p.name}</div>
-                        <div className="prod-price">{p.price}</div>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="cta-row" style={{marginTop: '20px'}}>
-                    <button className="btn-ghost" onClick={reset}>Relancer le test</button>
-                    <a href="https://www.decathlon.fr" target="_blank" rel="noreferrer" className="btn-primary">
-                      Aller sur Decathlon.fr
-                    </a>
-                  </div>
-                </div>
-              )}
-            </div>
-          </section>
-
-          {/* COLONNE DROITE : Quiz or Summary */}
-          <aside className="card right-card" ref={formRef}>
-            <div className="card-content">
-              
-              {step === 'intro' && (
-                <div className="intro-placeholder">
-                  <div className="side-card-title">
-                    Profil sportif & postural
-                    <span>En attente</span>
-                  </div>
-                  <div className="posture-preview blur-mode">
-                    <div className="posture-card"><div className="posture-label">Analyse...</div></div>
-                    <div className="posture-card"><div className="posture-label">En attente...</div></div>
-                  </div>
-                  <p style={{fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '20px', textAlign: 'center'}}>
-                    Clique sur "Commencer" à gauche pour lancer l'analyse algorithmique.
-                  </p>
-                </div>
-              )}
-
-              {step === 'quiz' && (
-                <div className="quiz-container animate-in">
-                  <div className="side-card-title">
-                    Question {currentQ + 1} / {QUESTIONS.length + 1}
-                    <span>Analyse en cours...</span>
-                  </div>
-                  <div className="progress-mini">
-                    <div className="bar" style={{width: `${((currentQ+1)/(QUESTIONS.length+1))*100}%`}}></div>
-                  </div>
-                  
-                  {currentQ === 0 && (
-                    <div className="qcm-block">
-                      <label className="qcm-label">Quel est ton nom ?</label>
-                      <input
-                        type="text"
-                        className="name-input"
-                        placeholder="Entre ton prénom ou ton nom..."
-                        value={userName}
-                        onChange={(e) => setUserName(e.target.value)}
-                      />
-                      <button 
-                        className="btn-option" 
-                        onClick={() => {
-                          if (userName.trim()) {
-                            setCurrentQ(1);
-                          }
-                        }}
-                        style={{marginTop: '12px'}}
-                      >
-                        Continuer
-                      </button>
-                    </div>
-                  )}
-                  
-                  {currentQ > 0 && (
-                    <div className="qcm-block">
-                      <label className="qcm-label">{QUESTIONS[currentQ - 1].text}</label>
-                      <div className="qcm-options-vertical">
-                        {QUESTIONS[currentQ - 1].answers.map((ans, idx) => (
-                          <button key={idx} className="btn-option" onClick={() => handleAnswer(ans.weights, ans.text)}>
-                            {ans.text}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {step === 'result' && (
-                <div className="result-summary animate-in">
-                  <div className="side-card-title">
-                    Résultats
-                    <span style={{color: 'var(--accent)'}}>Terminé</span>
-                  </div>
-
-                  <div className="analyse-card">
-                    <div className="score-ring">
-                      <span className="score-val">100%</span>
-                    </div>
-                    <div>
-                      <strong>Profil Identifié</strong><br/>
-                      <span style={{color: 'var(--accent)'}}>{profileData.label}</span>
-                    </div>
-                  </div>
-
-                  <div className="side-card-title" style={{marginTop: '24px'}}>
-                    Tes mouvements clés
-                  </div>
-
-                  <div className="posture-preview">
-                    {recommendedExercises.map(ex => (
-                      <div 
-                        key={ex.id} 
-                        className="posture-card"
-                        onClick={() => setSelectedExercise(ex.id)}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <div className="posture-icon">{ex.img}</div>
-                        <div className="posture-label">{ex.name}</div>
-                        <div className="posture-tag">
-                          <span className="posture-tag-dot"></span>
-                          {ex.tag}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            </div>
-          </aside>
-
-        </div>
+              </div>
+            </section>
+          </div>
         )}
       </main>
 
