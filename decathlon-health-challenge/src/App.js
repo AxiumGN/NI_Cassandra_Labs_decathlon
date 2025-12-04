@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
-import './App.css'; 
+import './App.css';
+import UserCard from './UserCard';
+import ExerciseDetail from './ExerciseDetail'; 
 
 // --- DONNÉES & LOGIQUE (Le "Cerveau" de l'app) ---
 
@@ -81,6 +83,10 @@ function App() {
   const [currentQ, setCurrentQ] = useState(0);
   const [scores, setScores] = useState({ senior: 0, muscle: 0, cardio: 0, beginner: 0, athlete: 0 });
   const [resultProfile, setResultProfile] = useState(null);
+  const [userName, setUserName] = useState('');
+  const [userAnswers, setUserAnswers] = useState([]);
+  const [showCard, setShowCard] = useState(false);
+  const [selectedExercise, setSelectedExercise] = useState(null);
   
   const formRef = useRef(null);
 
@@ -90,10 +96,14 @@ function App() {
     if(formRef.current) formRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleAnswer = (weights) => {
+  const handleAnswer = (weights, answerText) => {
     const newScores = { ...scores };
     Object.keys(weights).forEach(k => newScores[k] = (newScores[k] || 0) + weights[k]);
     setScores(newScores);
+    
+    // Enregistrer la réponse
+    const newAnswers = [...userAnswers, answerText];
+    setUserAnswers(newAnswers);
 
     if (currentQ < QUESTIONS.length - 1) {
       setCurrentQ(currentQ + 1);
@@ -102,6 +112,7 @@ function App() {
       const winner = Object.keys(newScores).reduce((a, b) => newScores[a] > newScores[b] ? a : b);
       setResultProfile(winner);
       setStep('result');
+      setShowCard(true);
     }
   };
 
@@ -110,6 +121,9 @@ function App() {
     setCurrentQ(0);
     setScores({ senior: 0, muscle: 0, cardio: 0, beginner: 0, athlete: 0 });
     setResultProfile(null);
+    setUserName('');
+    setUserAnswers([]);
+    setShowCard(false);
   };
 
   // Données dynamiques pour l'affichage résultat
@@ -134,7 +148,59 @@ function App() {
       </header>
 
       <main>
-        <div className="shell">
+        {step === 'result' ? (
+          // LAYOUT RÉSULTAT : Carte à gauche (principale)
+          <div className="shell-result">
+            {/* COLONNE GAUCHE : GRANDE CARTE INTERACTIVE */}
+            <section className="card left-card-result">
+              {showCard && (
+                <UserCard 
+                  userName={userName}
+                  answers={userAnswers}
+                  categoryName={profileData.label}
+                  categoryDesc={profileData.desc}
+                />
+              )}
+            </section>
+
+            {/* COLONNE DROITE : DÉTAILS ET INFOS */}
+            <aside className="card right-card-result">
+              <div className="card-content">
+                <div className="result-details animate-in">
+                  <div className="eyebrow">Diagnostic Terminé</div>
+                  <h1>Ton profil : {profileData.label}</h1>
+                  <p className="subtitle">{profileData.desc}</p>
+                  
+                  <div className="tips-box">
+                    <h4>🧠 Conseils personnalisés :</h4>
+                    <ul>
+                      {profileData.tips.map((t, i) => <li key={i}>{t}</li>)}
+                    </ul>
+                  </div>
+
+                  <h4 style={{marginTop: '20px', marginBottom: '10px'}}>🛒 Matériel recommandé (Bonus)</h4>
+                  <div className="product-grid">
+                    {recommendedProducts.map((p, i) => (
+                      <div className="product-card-mini" key={i}>
+                        <div className="prod-name">{p.name}</div>
+                        <div className="prod-price">{p.price}</div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="cta-row" style={{marginTop: '20px'}}>
+                    <button className="btn-ghost" onClick={reset}>Relancer le test</button>
+                    <a href="https://www.decathlon.fr" target="_blank" rel="noreferrer" className="btn-primary">
+                      Aller sur Decathlon.fr
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        ) : (
+          // LAYOUT NORMAL : Quiz et intro
+          <div className="shell">
           
           {/* COLONNE GAUCHE : Static info or Results details */}
           <section className="card left-card">
@@ -224,23 +290,49 @@ function App() {
               {step === 'quiz' && (
                 <div className="quiz-container animate-in">
                   <div className="side-card-title">
-                    Question {currentQ + 1} / {QUESTIONS.length}
+                    Question {currentQ + 1} / {QUESTIONS.length + 1}
                     <span>Analyse en cours...</span>
                   </div>
                   <div className="progress-mini">
-                    <div className="bar" style={{width: `${((currentQ+1)/QUESTIONS.length)*100}%`}}></div>
+                    <div className="bar" style={{width: `${((currentQ+1)/(QUESTIONS.length+1))*100}%`}}></div>
                   </div>
                   
-                  <div className="qcm-block">
-                    <label className="qcm-label">{QUESTIONS[currentQ].text}</label>
-                    <div className="qcm-options-vertical">
-                      {QUESTIONS[currentQ].answers.map((ans, idx) => (
-                        <button key={idx} className="btn-option" onClick={() => handleAnswer(ans.weights)}>
-                          {ans.text}
-                        </button>
-                      ))}
+                  {currentQ === 0 && (
+                    <div className="qcm-block">
+                      <label className="qcm-label">Quel est ton nom ?</label>
+                      <input
+                        type="text"
+                        className="name-input"
+                        placeholder="Entre ton prénom ou ton nom..."
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                      />
+                      <button 
+                        className="btn-option" 
+                        onClick={() => {
+                          if (userName.trim()) {
+                            setCurrentQ(1);
+                          }
+                        }}
+                        style={{marginTop: '12px'}}
+                      >
+                        Continuer
+                      </button>
                     </div>
-                  </div>
+                  )}
+                  
+                  {currentQ > 0 && (
+                    <div className="qcm-block">
+                      <label className="qcm-label">{QUESTIONS[currentQ - 1].text}</label>
+                      <div className="qcm-options-vertical">
+                        {QUESTIONS[currentQ - 1].answers.map((ans, idx) => (
+                          <button key={idx} className="btn-option" onClick={() => handleAnswer(ans.weights, ans.text)}>
+                            {ans.text}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -267,7 +359,12 @@ function App() {
 
                   <div className="posture-preview">
                     {recommendedExercises.map(ex => (
-                      <div key={ex.id} className="posture-card">
+                      <div 
+                        key={ex.id} 
+                        className="posture-card"
+                        onClick={() => setSelectedExercise(ex.id)}
+                        style={{ cursor: 'pointer' }}
+                      >
                         <div className="posture-icon">{ex.img}</div>
                         <div className="posture-label">{ex.name}</div>
                         <div className="posture-tag">
@@ -284,11 +381,20 @@ function App() {
           </aside>
 
         </div>
+        )}
       </main>
 
       <footer>
         Prototype React réalisé pour la Nuit de l&#39;Info &mdash; Défi Decathlon Digital.
       </footer>
+
+      {/* Modal des détails d'exercice */}
+      {selectedExercise && (
+        <ExerciseDetail 
+          exerciseId={selectedExercise} 
+          onClose={() => setSelectedExercise(null)}
+        />
+      )}
     </div>
   );
 }
