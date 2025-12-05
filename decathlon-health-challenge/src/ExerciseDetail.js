@@ -43,25 +43,25 @@ const EXERCISE_DETAILS = {
     postures: [
       {
         phase: 'Position de départ',
-        icon: '🫡',
+        icon: '�',
         description: 'Debout, pieds écartés, mains vers l\'avant',
         keyPoints: ['Dos droit', 'Regard vers l\'horizon', 'Poids sur les talons']
       },
       {
         phase: 'Descente',
-        icon: '⬇️',
+        icon: '📉',
         description: 'Abaisse-toi progressivement',
         keyPoints: ['Genoux au-dessus des chevilles', 'Hanches qui reculent', 'Buste stable']
       },
       {
         phase: 'Bas du mouvement',
-        icon: '🎯',
+        icon: '🦵',
         description: 'Touche légèrement la chaise',
         keyPoints: ['Genou ~90°', 'Cuisses parallèles au sol', 'Équilibre maintenu']
       },
       {
         phase: 'Remontée',
-        icon: '⬆️',
+        icon: '📈',
         description: 'Pousse avec les jambes',
         keyPoints: ['Talons collés au sol', 'Respiration complète', 'Posture initiale']
       }
@@ -115,7 +115,7 @@ const EXERCISE_DETAILS = {
     postures: [
       {
         phase: 'Position de départ',
-        icon: '🫡',
+        icon: '💪',
         description: 'Debout, pieds écartés, bras tendus',
         keyPoints: ['Poids équilibré', 'Regard droit', 'Sangle abdominale engagée']
       },
@@ -127,13 +127,13 @@ const EXERCISE_DETAILS = {
       },
       {
         phase: 'Profondeur maximale',
-        icon: '🎯',
+        icon: '🦵',
         description: 'Cuisses parallèles ou plus bas',
         keyPoints: ['Équilibre stable', 'Tronc droit', 'Genou 90°']
       },
       {
         phase: 'Remontée explosive',
-        icon: '⬆️',
+        icon: '⚡',
         description: 'Pousse avec énergie',
         keyPoints: ['Jambes qui poussent', 'Corps qui se redresse', 'Respiration complète']
       }
@@ -188,25 +188,25 @@ const EXERCISE_DETAILS = {
     postures: [
       {
         phase: 'Position de préparation',
-        icon: '🫡',
+        icon: '🛑',
         description: 'Au sol, avant-bras et genoux au sol',
         keyPoints: ['Coudes sous les épaules', 'Corps détendu', 'Engagement du cœur']
       },
       {
         phase: 'Élévation du corps',
-        icon: '⬆️',
+        icon: '📈',
         description: 'Lève-toi progressivement',
         keyPoints: ['Engagement progressif', 'Ligne droite', 'Stabilité']
       },
       {
         phase: 'Position de maintien',
-        icon: '🎯',
+        icon: '💪',
         description: 'Position finale - corps aligné',
         keyPoints: ['Tête neutre', 'Abdominaux serrés', 'Fesses engagées']
       },
       {
         phase: 'Modification facile',
-        icon: '🧘',
+        icon: '✋',
         description: 'Sur les genoux pour débuter',
         keyPoints: ['Même alignement', 'Moins d\'intensité', 'Progression sûre']
       }
@@ -263,19 +263,19 @@ const EXERCISE_DETAILS = {
     postures: [
       {
         phase: 'Position neutre',
-        icon: '🫡',
+        icon: '🔄',
         description: 'À quatre pattes, colonne neutre',
         keyPoints: ['Dos plat', 'Cou neutre', 'Mains sous les épaules']
       },
       {
         phase: 'Position Chat',
-        icon: '🐈',
+        icon: '⬆️',
         description: 'Dos arrondi, menton vers poitrine',
         keyPoints: ['Arc complet', 'Étirement maximal', 'Respiration calme']
       },
       {
         phase: 'Position Vache',
-        icon: '🐄',
+        icon: '⬇️',
         description: 'Ventre vers le bas, regard vers le haut',
         keyPoints: ['Ouverture poitrine', 'Mobilité complète', 'Douceur']
       }

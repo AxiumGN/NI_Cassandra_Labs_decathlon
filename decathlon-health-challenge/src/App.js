@@ -62,12 +62,12 @@ const QUESTIONS = [
 ];
 
 const EXERCISES = [
-  { id: 'sq1', name: 'Squat Assisté', cats: ['senior', 'beginner'], tag: 'Genoux protégés', img: '🪑' },
-  { id: 'sq2', name: 'Air Squat', cats: ['cardio', 'muscle'], tag: 'Dos neutre', img: '🏋️' },
-  { id: 'plank', name: 'Gainage Planche', cats: ['beginner', 'muscle', 'athlete'], tag: 'Sangle abdominale', img: '➖' },
-  { id: 'lunges', name: 'Fentes Arrières', cats: ['cardio', 'athlete'], tag: 'Équilibre', img: '🦵' },
-  { id: 'catcow', name: 'Chat-Vache', cats: ['senior', 'beginner'], tag: 'Mobilité dos', img: '🐈' },
-  { id: 'burpee', name: 'Burpees Soft', cats: ['athlete', 'cardio'], tag: 'Cardio max', img: '🔥' }
+  { id: 'sq1', name: 'Squat Assisté', cats: ['senior', 'beginner'], tag: 'Genoux protégés', img: '�' },
+  { id: 'sq2', name: 'Air Squat', cats: ['cardio', 'muscle'], tag: 'Dos neutre', img: '⬇️' },
+  { id: 'plank', name: 'Gainage Planche', cats: ['beginner', 'muscle', 'athlete'], tag: 'Sangle abdominale', img: '💪' },
+  { id: 'lunges', name: 'Fentes Arrières', cats: ['cardio', 'athlete'], tag: 'Équilibre', img: '↗️' },
+  { id: 'catcow', name: 'Chat-Vache', cats: ['senior', 'beginner'], tag: 'Mobilité dos', img: '�' },
+  { id: 'burpee', name: 'Burpees Soft', cats: ['athlete', 'cardio'], tag: 'Cardio max', img: '⚡' }
 ];
 
 const PRODUCTS = {
