@@ -62,12 +62,26 @@ const QUESTIONS = [
 ];
 
 const EXERCISES = [
-  { id: 'sq1', name: 'Squat Assisté', cats: ['senior', 'beginner'], tag: 'Genoux protégés', img: '�' },
-  { id: 'sq2', name: 'Air Squat', cats: ['cardio', 'muscle'], tag: 'Dos neutre', img: '⬇️' },
-  { id: 'plank', name: 'Gainage Planche', cats: ['beginner', 'muscle', 'athlete'], tag: 'Sangle abdominale', img: '💪' },
-  { id: 'lunges', name: 'Fentes Arrières', cats: ['cardio', 'athlete'], tag: 'Équilibre', img: '↗️' },
-  { id: 'catcow', name: 'Chat-Vache', cats: ['senior', 'beginner'], tag: 'Mobilité dos', img: '�' },
-  { id: 'burpee', name: 'Burpees Soft', cats: ['athlete', 'cardio'], tag: 'Cardio max', img: '⚡' }
+  // ===== JAMBES (LEGS) =====
+  { id: 'sq1', name: 'Squat Assisté', bodyPart: 'Jambes', cats: ['senior', 'beginner'], tag: 'Genoux protégés', img: '🪑' },
+  { id: 'sq2', name: 'Air Squat', bodyPart: 'Jambes', cats: ['cardio', 'muscle'], tag: 'Dos neutre', img: '🏋️' },
+  { id: 'lunges', name: 'Fentes Avant', bodyPart: 'Jambes', cats: ['cardio', 'muscle'], tag: 'Équilibre', img: '↗️' },
+  { id: 'deadlift', name: 'Soulevé de Terre', bodyPart: 'Jambes', cats: ['muscle', 'athlete'], tag: 'Puissance', img: '⬆️' },
+  { id: 'calf_raises', name: 'Montées sur Talons', bodyPart: 'Jambes', cats: ['beginner', 'senior'], tag: 'Mollets', img: '🦶' },
+
+  // ===== CORE / ABS =====
+  { id: 'plank', name: 'Gainage Planche', bodyPart: 'Core', cats: ['beginner', 'muscle', 'athlete'], tag: 'Sangle abdominale', img: '➖' },
+  { id: 'crunches', name: 'Abdominaux Crunch', bodyPart: 'Core', cats: ['beginner', 'muscle'], tag: 'Abdominaux', img: '🔄' },
+  { id: 'russian_twist', name: 'Rotation Russe', bodyPart: 'Core', cats: ['muscle', 'athlete'], tag: 'Obliques', img: '🔁' },
+  { id: 'bicycle_crunch', name: 'Crunch Vélo', bodyPart: 'Core', cats: ['beginner', 'cardio'], tag: 'Cardio Ab', img: '🚴' },
+
+  // ===== DOS (BACK) =====
+  { id: 'catcow', name: 'Chat-Vache', bodyPart: 'Dos', cats: ['senior', 'beginner'], tag: 'Mobilité dos', img: '🐈' },
+  { id: 'superman', name: 'Superman', bodyPart: 'Dos', cats: ['beginner', 'muscle'], tag: 'Renforcement dorsal', img: '🦸' },
+  { id: 'rows', name: 'Tirage Buste', bodyPart: 'Dos', cats: ['muscle', 'athlete'], tag: 'Force dorsal', img: '🏹' },
+
+  // ===== POITRINE (CHEST) =====
+  { id: 'push_ups', name: 'Pompes', bodyPart: 'Poitrine', cats: ['beginner', 'muscle', 'athlete'], tag: 'Poids du corps', img: '📏' },
 ];
 
 const PRODUCTS = {

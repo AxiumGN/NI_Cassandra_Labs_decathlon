@@ -71,6 +71,21 @@
 .day-header h3 { margin: 0; color: #00b894; }
 .day-header span { color: #a8b2d1; font-size: 0.9rem; }
 
+/* Body Part Groups */
+.body-part-group {
+  margin-bottom: 24px;
+}
+
+.body-part-title {
+  margin: 0 0 12px 0;
+  color: #00cec9;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid rgba(0, 206, 201, 0.3);
+}
+
 /* Exercise List */
 .exercise-list {
   display: flex;
@@ -129,12 +144,42 @@
   font-size: 0.9rem;
 }
 
+/* Plan Statistics */
+.plan-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-label {
+  color: #a8b2d1;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  color: #00cec9;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
 /* Shop Card */
 .shop-card {
   background: #f5f7fb;
   border-radius: 16px;
   padding: 24px;
   color: #0b1020;
+  margin-bottom: 20px;
 }
 
 .shop-card h3 { margin-top: 0; color: #0082C3; }
@@ -173,13 +218,49 @@
 .btn-full-shop {
   display: block;
   text-align: center;
-  margin-top: 20px;
   background: #FFCE00;
   color: black;
   text-decoration: none;
   padding: 12px;
   border-radius: 4px;
   font-weight: bold;
+  transition: all 0.2s;
+}
+
+.btn-full-shop:hover {
+  background: #FFD700;
+  transform: translateY(-2px);
+}
+
+/* Tips Card */
+.tips-card {
+  background: rgba(0, 206, 201, 0.1);
+  border: 1px solid rgba(0, 206, 201, 0.3);
+  border-radius: 16px;
+  padding: 24px;
+  color: #f5f7fb;
+}
+
+.tips-card h3 {
+  margin-top: 0;
+  color: #00cec9;
+}
+
+.tips-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tips-list li {
+  padding: 8px 0;
+  color: #a8b2d1;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(0, 206, 201, 0.2);
+}
+
+.tips-list li:last-child {
+  border-bottom: none;
 }
 
 .animate-in { animation: fadeIn 0.5s ease forwards; }
