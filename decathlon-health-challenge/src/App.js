@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react';
 import './App.css';
 import UserCard from './UserCard';
 import ExerciseDetail from './ExerciseDetail';
-import QuizPage from './QuizPage'; 
+import QuizPage from './QuizPage';
+import WeeklyPlan from './WeeklyPlan';
 
 // --- DONNÉES & LOGIQUE (Le "Cerveau" de l'app) ---
 
@@ -81,6 +82,7 @@ const PRODUCTS = {
 
 function App() {
   const [step, setStep] = useState('intro'); // intro, quiz, result
+  const [viewMode, setViewMode] = useState('card'); // 'card' or 'plan' inside result step
   const [currentQ, setCurrentQ] = useState(0);
   const [scores, setScores] = useState({ senior: 0, muscle: 0, cardio: 0, beginner: 0, athlete: 0 });
   const [resultProfile, setResultProfile] = useState(null);
@@ -101,15 +103,25 @@ function App() {
     setUserAnswers(result.answers);
     setResultProfile(result.profile);
     setStep('result');
-    setShowCard(true);
+    setViewMode('card');
+    setTimeout(() => setShowCard(true), 100);
   };
 
   const handleQuizBack = () => {
     setStep('intro');
   };
 
+  const handleOpenPlan = () => {
+    setViewMode('plan');
+  };
+
+  const handleBackToCard = () => {
+    setViewMode('card');
+  };
+
   const reset = () => {
     setStep('intro');
+    setViewMode('card');
     setCurrentQ(0);
     setScores({ senior: 0, muscle: 0, cardio: 0, beginner: 0, athlete: 0 });
     setResultProfile(null);
@@ -120,7 +132,7 @@ function App() {
 
   // Données dynamiques pour l'affichage résultat
   const profileData = resultProfile ? CATEGORIES[resultProfile.toUpperCase()] : null;
-  const recommendedExercises = resultProfile ? EXERCISES.filter(e => e.cats.includes(resultProfile)).slice(0, 3) : [];
+  const recommendedExercises = resultProfile ? EXERCISES.filter(e => e.cats.includes(resultProfile)) : [];
   const recommendedProducts = resultProfile ? PRODUCTS[resultProfile] : [];
 
   return (
@@ -141,64 +153,67 @@ function App() {
 
       <main>
         {step === 'quiz' ? (
-          // PAGE QCM - Page séparée avec composant QuizPage
           <QuizPage 
             questions={QUESTIONS}
             onComplete={handleQuizComplete}
             onBack={handleQuizBack}
           />
         ) : step === 'result' ? (
-          // LAYOUT RÉSULTAT : Carte à gauche (principale)
-          <div className="shell-result">
-            {/* COLONNE GAUCHE : GRANDE CARTE INTERACTIVE */}
-            <section className="card left-card-result">
-              {showCard && (
-                <UserCard 
-                  userName={userName}
-                  answers={userAnswers}
-                  categoryName={profileData.label}
-                  categoryDesc={profileData.desc}
-                />
-              )}
-            </section>
+          // ZONE RESULTAT
+          <div className="shell-result-container" style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
+            
+            {/* MODE 1 : LA CARTE 3D */}
+            {viewMode === 'card' && (
+              <div className="shell-result">
+                {/* COLONNE GAUCHE : CARTE */}
+                <section className="card left-card-result">
+                  {showCard && (
+                    <UserCard 
+                      userName={userName}
+                      answers={userAnswers}
+                      categoryName={profileData.label}
+                      categoryDesc={profileData.desc}
+                      onOpenPlan={handleOpenPlan}
+                    />
+                  )}
+                </section>
 
-            {/* COLONNE DROITE : DÉTAILS ET INFOS */}
-            <aside className="card right-card-result">
-              <div className="card-content">
-                <div className="result-details animate-in">
-                  <div className="eyebrow">Diagnostic Terminé</div>
-                  <h1>Ton profil : {profileData.label}</h1>
-                  <p className="subtitle">{profileData.desc}</p>
-                  
-                  <div className="tips-box">
-                    <h4>🧠 Conseils personnalisés :</h4>
-                    <ul>
-                      {profileData.tips.map((t, i) => <li key={i}>{t}</li>)}
-                    </ul>
-                  </div>
-
-                  <h4 style={{marginTop: '20px', marginBottom: '10px'}}>🛒 Matériel recommandé (Bonus)</h4>
-                  <div className="product-grid">
-                    {recommendedProducts.map((p, i) => (
-                      <div className="product-card-mini" key={i}>
-                        <div className="prod-name">{p.name}</div>
-                        <div className="prod-price">{p.price}</div>
+                {/* COLONNE DROITE : RESUME RAPIDE */}
+                <aside className="card right-card-result">
+                  <div className="card-content">
+                    <div className="result-details animate-in">
+                      <div className="eyebrow">Analyse Réussie</div>
+                      <h1>Profil : {profileData.label}</h1>
+                      <div className="tips-box">
+                        <h4>🎯 Objectif principal</h4>
+                        <p>{profileData.desc}</p>
                       </div>
-                    ))}
+                      
+                      <div className="cta-row" style={{marginTop: '20px'}}>
+                        <button className="btn-ghost" onClick={reset}>Refaire le test</button>
+                      </div>
+                      <p style={{marginTop: '15px', fontSize: '0.8rem', color: '#a8b2d1'}}>
+                        ℹ️ Tournez la carte à gauche pour accéder à votre programme complet.
+                      </p>
+                    </div>
                   </div>
-                  
-                  <div className="cta-row" style={{marginTop: '20px'}}>
-                    <button className="btn-ghost" onClick={reset}>Relancer le test</button>
-                    <a href="https://www.decathlon.fr" target="_blank" rel="noreferrer" className="btn-primary">
-                      Aller sur Decathlon.fr
-                    </a>
-                  </div>
-                </div>
+                </aside>
               </div>
-            </aside>
+            )}
+
+            {/* MODE 2 : LE PROGRAMME SEMAINE */}
+            {viewMode === 'plan' && (
+              <WeeklyPlan 
+                profile={profileData}
+                exercises={recommendedExercises}
+                products={recommendedProducts}
+                onExerciseClick={setSelectedExercise}
+                onBack={handleBackToCard}
+              />
+            )}
+
           </div>
         ) : (
-          // LAYOUT INTRO : Une seule colonne, agrandie
           <div className="shell-intro">
             <section className="card left-card-intro">
               <div className="card-content">

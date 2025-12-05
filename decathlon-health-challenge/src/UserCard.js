@@ -1,81 +1,116 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './UserCard.css';
 
-const UserCard = ({ userName, answers, categoryName, categoryDesc }) => {
+const UserCard = ({ userName, answers, categoryName, categoryDesc, onOpenPlan }) => {
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
-  const [initialMouse, setInitialMouse] = useState({ x: 0, y: 0 });
-  const [initialRotation, setInitialRotation] = useState({ x: 0, y: 0 });
-  const [velocity, setVelocity] = useState({ x: 0, y: 0 });
-  const [momentum, setMomentum] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // Refs pour la physique
   const cardRef = useRef(null);
-  const velocityRef = useRef({ x: 0, y: 0 });
+  const stateRef = useRef({
+    isMouseDown: false,
+    currentX: 0,
+    currentY: 0,
+    targetX: 0,
+    targetY: 0,
+    startX: 0,
+    startY: 0,
+    startDragTime: 0, // Pour distinguer clic court vs long drag
+    totalMovement: 0  // Pour distinguer clic précis vs drag
+  });
+
+  // Boucle d'animation physique
+  useEffect(() => {
+    let animationFrameId;
+
+    const animate = () => {
+      const state = stateRef.current;
+      
+      if (!state.isMouseDown) {
+        // --- SNAPPING DOUX ---
+        // Quand on lâche, on va vers l'angle le plus proche (0 ou 180)
+        // On ralentit le facteur de 0.1 à 0.05 pour que ce soit plus "smooth" et moins violent
+        const snapTargetY = Math.round(state.targetY / 180) * 180;
+        const snapTargetX = 0;
+
+        state.targetY += (snapTargetY - state.targetY) * 0.08; // 0.08 = retour fluide
+        state.targetX += (snapTargetX - state.targetX) * 0.08;
+      }
+
+      // Application des valeurs
+      setRotation({ x: state.targetX, y: state.targetY });
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
 
   const handleMouseDown = (e) => {
+    stateRef.current.isMouseDown = true;
+    stateRef.current.startX = e.clientX;
+    stateRef.current.startY = e.clientY;
+    stateRef.current.startDragTime = Date.now();
+    stateRef.current.totalMovement = 0;
+    
     setIsMouseDown(true);
-    setInitialMouse({ x: e.clientX, y: e.clientY });
-    setInitialRotation({ ...rotation });
-    setMomentum(false);
-    velocityRef.current = { x: 0, y: 0 };
+    setIsDragging(false);
   };
 
   const handleMouseMove = (e) => {
-    if (!isMouseDown) return;
+    if (!stateRef.current.isMouseDown) return;
 
-    const deltaX = e.clientX - initialMouse.x;
-    const deltaY = e.clientY - initialMouse.y;
-
-    // Sensibilité de rotation - augmentée pour rotation 360°
-    const sensitivity = 1.2;
+    const deltaX = e.clientX - stateRef.current.startX;
+    const deltaY = e.clientY - stateRef.current.startY;
     
-    const newRotation = {
-      x: initialRotation.x + deltaY * sensitivity,
-      y: initialRotation.y + deltaX * sensitivity
-    };
+    // Calcul du mouvement total pour savoir si c'est un vrai drag
+    stateRef.current.totalMovement += Math.abs(deltaX) + Math.abs(deltaY);
 
-    // Calculer la vélocité pour l'effet momentum
-    velocityRef.current = {
-      x: deltaY * sensitivity,
-      y: deltaX * sensitivity
-    };
-
-    setRotation(newRotation);
-  };
-
-  const handleMouseUp = () => {
-    setIsMouseDown(false);
-    // Activer l'effet momentum
-    if (Math.abs(velocityRef.current.x) > 0.5 || Math.abs(velocityRef.current.y) > 0.5) {
-      setMomentum(true);
-      applyMomentum(velocityRef.current);
+    if (stateRef.current.totalMovement > 5) {
+      setIsDragging(true);
     }
+
+    // --- SENSIBILITÉ ---
+    // Réduite à 0.35 pour donner l'impression de poids
+    // "Grab for a bit longer" -> tourne moins vite
+    stateRef.current.targetY += deltaX * 0.35; 
+    stateRef.current.targetX -= deltaY * 0.35;
+
+    // Limiter l'inclinaison verticale (X) pour pas que la carte fasse des saltos bizarres
+    const maxTilt = 25;
+    if (stateRef.current.targetX > maxTilt) stateRef.current.targetX = maxTilt;
+    if (stateRef.current.targetX < -maxTilt) stateRef.current.targetX = -maxTilt;
+
+    stateRef.current.startX = e.clientX;
+    stateRef.current.startY = e.clientY;
   };
 
-  const applyMomentum = (vel) => {
-    let currentVel = { x: vel.x, y: vel.y };
-    let currentRot = { ...rotation };
+  const handleMouseUp = (e) => {
+    const dragDuration = Date.now() - stateRef.current.startDragTime;
+    const moved = stateRef.current.totalMovement;
 
-    const interval = setInterval(() => {
-      currentVel.x *= 0.95; // Friction
-      currentVel.y *= 0.95;
-      
-      currentRot.x += currentVel.x;
-      currentRot.y += currentVel.y;
-      
-      setRotation(currentRot);
-
-      if (Math.abs(currentVel.x) < 0.01 && Math.abs(currentVel.y) < 0.01) {
-        clearInterval(interval);
-        setMomentum(false);
-      }
-    }, 16);
+    stateRef.current.isMouseDown = false;
+    setIsMouseDown(false);
+    
+    // Si on a relâché rapidement et sans trop bouger, on considère que le drag est fini
+    // Mais on laisse le useEffect faire le snapping
   };
 
   const handleMouseLeave = () => {
+    stateRef.current.isMouseDown = false;
     setIsMouseDown(false);
   };
 
-  // Format answers pour l'affichage
+  // Gestion robuste du clic bouton
+  const handleButtonClick = (e) => {
+    e.stopPropagation(); // Empêcher la propagation au container
+    // Si on a bougé de moins de 10px, c'est un clic valide, même si la souris a tremblé
+    if (stateRef.current.totalMovement < 10) {
+      onOpenPlan();
+    }
+  };
+
   const answersArray = Array.isArray(answers) ? answers : Object.values(answers || {});
 
   return (
@@ -84,7 +119,7 @@ const UserCard = ({ userName, answers, categoryName, categoryDesc }) => {
         ref={cardRef}
         className="user-card"
         style={{
-          transform: `perspective(1200px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
+          transform: `perspective(1000px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
           cursor: isMouseDown ? 'grabbing' : 'grab'
         }}
         onMouseDown={handleMouseDown}
@@ -92,24 +127,22 @@ const UserCard = ({ userName, answers, categoryName, categoryDesc }) => {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Face avant de la carte */}
+        {/* FACE AVANT */}
         <div className="card-face card-front">
           <div className="card-header">
             <div className="card-logo">🏆</div>
             <span className="card-type">DECATHLON</span>
           </div>
-
           <div className="card-content">
             <div className="card-user-info">
-              <h2 className="card-name">{userName}</h2>
+              <h2 className="card-name">{userName || 'Sportif'}</h2>
               <p className="card-category">{categoryName}</p>
               <p className="card-desc">{categoryDesc}</p>
             </div>
-
             <div className="card-answers">
-              <h3 className="answers-title">Vos réponses :</h3>
+              <h3 className="answers-title">Vos réponses clés :</h3>
               <ul className="answers-list">
-                {answersArray.slice(0, 4).map((answer, index) => (
+                {answersArray.slice(0, 3).map((answer, index) => (
                   <li key={index} className="answer-item">
                     <span className="answer-number">{index + 1}</span>
                     <span className="answer-text">{answer}</span>
@@ -118,24 +151,34 @@ const UserCard = ({ userName, answers, categoryName, categoryDesc }) => {
               </ul>
             </div>
           </div>
-
           <div className="card-footer">
-            <span className="card-hint">💡 Cliquez et tirez pour tourner</span>
+            <span className="card-hint">← Glissez vers la gauche pour retourner</span>
           </div>
         </div>
 
-        {/* Face arrière (optionnel) */}
+        {/* FACE ARRIÈRE */}
         <div className="card-face card-back">
           <div className="card-back-content">
-            <h3>Conseils personnalisés</h3>
-            <p className="back-tip">🎯 Retrouvez vos conseils et programmes spécialisés en fonction de vos réponses</p>
+            <div className="back-icon">📅</div>
+            <h3>Votre Programme</h3>
+            <p className="back-tip">
+              Une routine personnalisée pour votre profil <strong>{categoryName}</strong>.
+            </p>
+            
+            {/* Bouton corrigé avec événement onMouseUp pour éviter les conflits */}
+            <button 
+              className="btn-plan" 
+              onMouseUp={handleButtonClick}
+              onMouseDown={(e) => e.stopPropagation()} 
+            >
+              <span className="btn-text">Lancer l'entraînement</span>
+              <span className="btn-arrow">→</span>
+            </button>
+          </div>
+          <div className="card-footer">
+            <span className="card-hint">Santé & Performance</span>
           </div>
         </div>
-      </div>
-
-      {/* Instruction d'interaction */}
-      <div className="card-interaction-hint">
-        Tirez la carte pour la faire tourner dans tous les sens
       </div>
     </div>
   );

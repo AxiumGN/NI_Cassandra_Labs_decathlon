@@ -1,4 +1,3 @@
-
 .exercise-detail-modal {
   position: fixed;
   top: 0;
@@ -43,7 +42,7 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 24px;
-  border-bottom: 2px solid rgba(0, 184, 148, 0.2);
+  border-bottom: 1px solid rgba(0, 184, 148, 0.15);
   padding-bottom: 20px;
 }
 
@@ -224,65 +223,75 @@
 
 /* Instructions */
 .instruction-section {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+  background: transparent;
+  border: none; 
+  padding: 0; 
 }
 
 .instruction-section h4 {
-  font-size: 14px;
+  font-size: 16px;
   color: #00cec9;
-  margin-bottom: 12px;
-  font-weight: 600;
+  margin-bottom: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .instruction-list {
   list-style: none;
   padding: 0;
   margin: 0;
+  border-left: 2px solid rgba(0, 184, 148, 0.2);
+  margin-left: 10px;
   counter-reset: steps;
 }
 
 .instruction-list li {
-  padding: 12px 16px;
-  margin-bottom: 8px;
-  background: rgba(255, 255, 255, 0.03);
-  border-left: 3px solid #00b894;
-  border-radius: 6px;
-  color: #a8b2d1;
-  font-size: 14px;
+  padding: 0 0 24px 20px;
+  margin-bottom: 0;
+  background: transparent;
+  border: none;
+  border-left: none;
+  color: #d1d5db;
+  font-size: 15px;
   line-height: 1.6;
-  counter-increment: steps;
   position: relative;
-  padding-left: 32px;
+  counter-increment: steps;
 }
 
 .instruction-list li::before {
   content: counter(steps);
   position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #00b894;
-  color: #051018;
+  left: -11px;
+  top: 0;
+  background: #0b1020;
+  color: #00b894;
   width: 20px;
   height: 20px;
+  border: 2px solid #00b894;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: bold;
+  font-size: 11px;
+  font-weight: 800;
+  z-index: 2;
 }
 
 /* Warning List */
 .instruction-section.warning {
-  background: rgba(255, 100, 100, 0.08);
-  border-left: 4px solid #ff6464;
-  padding: 16px;
-  border-radius: 8px;
+  background: rgba(255, 100, 100, 0.05);
+  border: 1px solid rgba(255, 100, 100, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 10px;
 }
 
 .instruction-section.warning h4 {
-  color: #ff6464;
+  color: #ff6b6b;
+  margin-top: 0;
 }
 
 .warning-list {
@@ -293,9 +302,14 @@
 
 .warning-list li {
   padding: 8px 0;
-  color: #a8b2d1;
-  font-size: 14px;
-  line-height: 1.5;
+  color: #e2e8f0;
+  display: flex;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.warning-list li:last-child {
+  border-bottom: none;
 }
 
 /* Postures Grid */
@@ -324,12 +338,12 @@
   font-size: 48px;
   margin-bottom: 12px;
   line-height: 1;
-  animation: bounce 2s ease-in-out infinite;
+  animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1 forwards; 
 }
 
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+@keyframes popIn {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .posture-card h5 {
