@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/NI_Cassandra_Labs_decathlon/static/css/main.a6457e8a.css",
+    "main.js": "/NI_Cassandra_Labs_decathlon/static/js/main.a01b00e6.js",
+    "static/js/453.184da1c5.chunk.js": "/NI_Cassandra_Labs_decathlon/static/js/453.184da1c5.chunk.js",
+    "index.html": "/NI_Cassandra_Labs_decathlon/index.html",
+    "main.a6457e8a.css.map": "/NI_Cassandra_Labs_decathlon/static/css/main.a6457e8a.css.map",
+    "main.a01b00e6.js.map": "/NI_Cassandra_Labs_decathlon/static/js/main.a01b00e6.js.map",
+    "453.184da1c5.chunk.js.map": "/NI_Cassandra_Labs_decathlon/static/js/453.184da1c5.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a6457e8a.css",
+    "static/js/main.a01b00e6.js"
+  ]
+}
