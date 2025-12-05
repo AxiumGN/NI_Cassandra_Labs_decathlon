@@ -10,6 +10,7 @@ const EXERCISE_DETAILS = {
     duration: '3-5 min',
     emoji: '🪑',
     description: 'Mouvement fondamental pour renforcer les jambes en toute sécurité.',
+    gifUrl: '/squat.gif', // GIF local pour démonstration
     
     // Niveau 2 : Instructions textuelles détaillées
     instructions: {
@@ -155,8 +156,9 @@ const EXERCISE_DETAILS = {
     category: 'beginner',
     difficulty: 'Moyen',
     duration: '3-5 min',
-    emoji: '➖',
+    emoji: '💪',
     description: 'Renforce la sangle abdominale et la stabilité du tronc.',
+    gifUrl: '/plank.png',
     
     instructions: {
       preparation: [
@@ -228,8 +230,9 @@ const EXERCISE_DETAILS = {
     category: 'senior',
     difficulty: 'Facile',
     duration: '2-4 min',
-    emoji: '🐈',
+    emoji: '�',
     description: 'Améliore la mobilité et la flexibilité du rachis cervical et lombaire.',
+    gifUrl: '/chat.gif',
     
     instructions: {
       preparation: [
@@ -355,6 +358,18 @@ const ExerciseDetail = ({ exerciseId, onClose }) => {
           {/* TAB 1: Overview */}
           {activeTab === 'overview' && (
             <div className="tab-pane">
+              {/* GIF de démonstration si disponible */}
+              {exercise.gifUrl && (
+                <div className="exercise-gif-container">
+                  <img 
+                    src={exercise.gifUrl} 
+                    alt={`Démonstration - ${exercise.name}`}
+                    className="exercise-gif"
+                  />
+                  <p className="gif-credit">Démonstration du mouvement</p>
+                </div>
+              )}
+
               <div className="info-grid">
                 <div className="info-item">
                   <h4>Séries & Répétitions</h4>
